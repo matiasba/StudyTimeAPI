@@ -8,9 +8,9 @@ const userSchema = new Schema({
   },
   name: String,
   passwordHash: String,
-  notes: [{
+  Courses: [{
     type: Schema.Types.ObjectId,
-    ref: 'Note'
+    ref: 'Course'
   }]
 })
 

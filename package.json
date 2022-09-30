@@ -1,13 +1,13 @@
 {
-  "name": "part3",
+  "name": "cursos_api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Super api de cursos",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon index.js",
+    "dev": "nodemon index.js",
     "lint": "npm run lint",
-    "start": "NODE_ENV=production node index.js",
-    "test": "NODE_ENV=test PORT=1234 jest --verbose tests/user.test.js",
+    "start": "node index.js",
+    "test": "PORT=1234 jest --verbose tests/user.test.js",
     "test:watch": "npm run test -- --watch"
   },
   "keywords": [],
@@ -22,13 +22,13 @@
     "dotenv": "8.2.0",
     "express": "4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "5.11.18",
-    "mongoose-unique-validator": "2.0.3"
+    "mongoose": "^5.13.15",
+    "mongoose-unique-validator": "2.0.3",
+    "nodemon": "^2.0.20"
   },
   "devDependencies": {
     "eslint": "7.20.0",
     "jest": "26.6.3",
-    "nodemon": "2.0.7",
     "standard": "16.0.3",
     "supertest": "6.1.3"
   },

@@ -4,6 +4,8 @@ const courseSchema = new Schema({
   description: String,
   name: String,
   date: Date,
+  imageId: String,
+  raiting: Number
 })
 
 courseSchema.set('toJSON', {

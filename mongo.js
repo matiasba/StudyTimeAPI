@@ -10,9 +10,7 @@ if (!connectionString) {
 // conexión a mongodb
 mongoose.connect(connectionString, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
+  useUnifiedTopology: true
 })
   .then(() => {
     console.log('Database connected')

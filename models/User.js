@@ -4,10 +4,21 @@ const uniqueValidator = require('mongoose-unique-validator')
 const userSchema = new Schema({
   username: {
     type: String,
-    unique: true
+    unique: true,
+    required: true
   },
-  name: String,
-  passwordHash: String,
+  role: {
+    type: String,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  passwordHash: {
+    type: String,
+    required: true
+  },
   Courses: [{
     type: Schema.Types.ObjectId,
     ref: 'Course'

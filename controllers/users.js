@@ -24,13 +24,17 @@ usersRouter.post('/', async (request, response) => {
     passwordHash
   })
 
+  let error
   try {
     await user.save()
-  } catch (error) {
+  } catch (err) {
+    error = err
+  }
+  if (error == null) {
+    response.status(201).json('created')
+  } else {
     response.status(400).json(error)
   }
-
-  response.status(201).json('created')
 })
 
 module.exports = usersRouter

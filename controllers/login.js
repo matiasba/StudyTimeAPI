@@ -17,26 +17,26 @@ loginRouter.post('/', async (request, response) => {
     response.status(401).json({
       error: 'invalid user or password'
     })
-  }
-
-  const userForToken = {
-    id: user._id,
-    username: user.username
-  }
-
-  const token = jwt.sign(
-    userForToken,
-    process.env.SECRET,
-    {
-      expiresIn: 60 * 60 * 24 * 7
+  } else {
+    const userForToken = {
+      id: user._id,
+      username: user.username
     }
-  )
 
-  response.send({
-    name: user.name,
-    username: user.username,
-    token
-  })
+    const token = jwt.sign(
+      userForToken,
+      process.env.SECRET,
+      {
+        expiresIn: 60 * 60 * 24 * 7
+      }
+    )
+
+    response.send({
+      name: user.name,
+      username: user.username,
+      token
+    })
+  }
 })
 
 module.exports = loginRouter

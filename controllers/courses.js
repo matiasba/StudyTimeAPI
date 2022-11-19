@@ -1,16 +1,27 @@
-const Course = require('./models/Course')
-const useAuthorization = require('./middleware/userAutorization')
+const Course = require('../models/Course')
+const useAuthorization = require('../middleware/userAutorization')
 const coursesRouter = require('express').Router()
 
-coursesRouter.get('/api/courses', async (request, response) => {
-  const courses = await Course.find({}).populate('user', {
-    username: 1,
-    name: 1
-  })
-  response.json(courses)
+coursesRouter.get('/', (request, response, next) => {
+  Course.find()
+    .then(course => {
+      if (course) return response.json(course)
+      response.status(404).end()
+    })
+    .catch(err => next(err))
 })
 
-coursesRouter.get('/api/courses/:id', (request, response, next) => {
+coursesRouter.get('/filter', (request, response, next) => {
+  Course.find().sort(request.query.orderBy).limit(request.query.limit)
+    .then(course => {
+      if (course) return response.json(course)
+      response.status(404).end()
+    })
+    .catch(err => next(err))
+})
+
+// Devuelve contenido del curso por ID
+coursesRouter.get('/:id', (request, response, next) => {
   const { id } = request.params
 
   Course.findById(id)
@@ -21,13 +32,15 @@ coursesRouter.get('/api/courses/:id', (request, response, next) => {
     .catch(err => next(err))
 })
 
-coursesRouter.put('/api/courses/:id', useAuthorization, (request, response, next) => {
+// Modifica contenido del curso por ID
+coursesRouter.put('/:id', useAuthorization, (request, response, next) => {
   const { id } = request.params
   const course = request.body
 
   const newCourseInfo = {
     description: course.description,
-    name: course.name
+    name: course.name,
+    type: course.type
   }
 
   Course.findByIdAndUpdate(id, newCourseInfo, { new: true })
@@ -37,18 +50,20 @@ coursesRouter.put('/api/courses/:id', useAuthorization, (request, response, next
     .catch(next)
 })
 
-coursesRouter.delete('/api/courses/:id', useAuthorization, async (request, response, next) => {
+// Borra curso por ID
+coursesRouter.delete('/:id', useAuthorization, async (request, response, next) => {
   const { id } = request.params
 
   const course = await Course.findByIdAndDelete(id)
   if (course === null) return response.sendStatus(404)
   response.status(204).end()
 })
-
-coursesRouter.post('/api/courses', useAuthorization, async (request, response, next) => {
+// Crea nuevo curso
+coursesRouter.post('/', useAuthorization, async (request, response, next) => {
   const {
     name,
-    description
+    description,
+    type
   } = request.body
 
   if (!description && !name) {
@@ -60,12 +75,11 @@ coursesRouter.post('/api/courses', useAuthorization, async (request, response, n
   const newCourse = new Course({
     name,
     description,
-    date: new Date()
+    date: new Date(),
+    type: type,
+    raiting: [0, 0],
+    ownedBy: request.userId
   })
-
-  // newNote.save().then(savedNote => {
-  //   response.json(savedNote)
-  // }).catch(err => next(err))
 
   try {
     const savedCourse = await newCourse.save()
@@ -74,3 +88,5 @@ coursesRouter.post('/api/courses', useAuthorization, async (request, response, n
     next(error)
   }
 })
+
+module.exports = coursesRouter

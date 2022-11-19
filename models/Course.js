@@ -1,12 +1,26 @@
 const { Schema, model } = require('mongoose')
 
 const courseSchema = new Schema({
-  description: String,
-  name: String,
+  description: {
+    type: String,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
   date: Date,
   imageId: String,
-  raiting: Number,
-  type: [String]
+  raiting: [Number, Number],
+  type: {
+    type: [String],
+    required: true
+  },
+  ownedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users',
+    required: true
+  }
 })
 
 courseSchema.set('toJSON', {

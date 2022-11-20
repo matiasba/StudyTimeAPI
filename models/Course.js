@@ -1,21 +1,46 @@
 const { Schema, model } = require('mongoose')
 
 const courseSchema = new Schema({
-  description: {
-    type: String,
-    required: true
-  },
   name: {
     type: String,
     required: true
   },
-  date: Date,
-  imageId: String,
-  raiting: [Number, Number],
+  description: {
+    type: String,
+    required: true
+  },
+  cost: {
+    type: String,
+    required: true
+  },
+  periodicity: {
+    type: String,
+    required: true
+  },
   type: {
     type: [String],
     required: true
   },
+  state: {
+    type: String,
+    required: true
+  },
+  comments: {
+    type: [{
+      ownedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'Users'
+      },
+      state: {
+        type: String
+      },
+      comment: {
+        type: String
+      }
+    }]
+  },
+  date: Date,
+  raiting: [Number, Number],
   ownedBy: {
     type: Schema.Types.ObjectId,
     ref: 'Users',

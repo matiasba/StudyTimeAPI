@@ -13,7 +13,7 @@ usersRouter.post('/', async (request, response) => {
   const { body } = request
   const { username, name, role, password, qualifications } = body
   // Tiene que haber una mejor manera de verificar esto
-  if ((!username || !name || !role || !password) || (role === 'Teacher' && !qualifications) || (role !== 'Teacher' || role !== 'Student')) {
+  if ((!username || !name || !role || !password) || (role === 'Teacher' && !qualifications) || (role !== 'Teacher' && role !== 'Student')) {
     response.status(400).json({ error: 'missing or invalid fields' })
     return
   }
@@ -37,7 +37,7 @@ usersRouter.post('/', async (request, response) => {
   if (error == null) {
     response.status(201).json('created')
   } else {
-    response.status(400).json(error)
+    response.status(500).json(error)
   }
 })
 

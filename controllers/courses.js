@@ -12,7 +12,8 @@ coursesRouter.get('/', (request, response, next) => {
 })
 
 coursesRouter.get('/filter', (request, response, next) => {
-  Course.find().sort(request.query.orderBy).limit(request.query.limit)
+  const filter = `{"name": { "$regex": ".*${request.query.name || ''}.*", "$options": "i" },"type": { "$regex": ".*${request.query.type || ''}.*", "$options": "i" }}`
+  Course.find(JSON.parse(filter)).sort(request.query.orderBy).limit(request.query.limit)
     .then(course => {
       if (course) return response.json(course)
       response.status(404).end()

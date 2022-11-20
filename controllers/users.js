@@ -4,10 +4,7 @@ const User = require('../models/User')
 
 // Devuelve todos los usuarios (tiene sentido?)
 usersRouter.get('/', async (request, response) => {
-  const users = await User.find({}).populate('users', {
-    content: 1,
-    date: 1
-  })
+  const users = await User.find({}).select('name -passwordHash')
   response.json(users)
 })
 

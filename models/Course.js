@@ -27,7 +27,7 @@ const courseSchema = new Schema({
   },
   comments: {
     type: [{
-      ownedBy: {
+      ownedby: {
         type: Schema.Types.ObjectId,
         ref: 'Users'
       },
@@ -41,7 +41,7 @@ const courseSchema = new Schema({
   },
   date: Date,
   raiting: [Number, Number],
-  ownedBy: {
+  ownedby: {
     type: Schema.Types.ObjectId,
     ref: 'Users',
     required: true

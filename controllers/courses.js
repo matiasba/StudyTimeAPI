@@ -14,7 +14,7 @@ coursesRouter.get('/', (request, response, next) => {
 
 // Devuelve cursos aplicando filtros ordenado y limites //Anda joya
 coursesRouter.get('/filter', (request, response, next) => {
-  const filter = `{"name": { "$regex": ".*${request.query.name || ''}.*", "$options": "i" },"type": { "$regex": ".*${request.query.type || ''}.*", "$options": "i" }}`
+  const filter = `{"name": { "$regex": ".*${request.query.name || ''}.*", "$options": "i" },"type": { "$regex": ".*${request.query.type || ''}.*", "$options": "i" },"state": "Publicado"}`
   Course.find(JSON.parse(filter)).sort(request.query.orderBy).limit(request.query.limit)
     .then(course => {
       if (course) return response.json(course)
@@ -25,7 +25,7 @@ coursesRouter.get('/filter', (request, response, next) => {
 
 // Devuelve cursos del profesor que lo solicite //Anda joya
 coursesRouter.get('/fromTeacher', useAuthorization, (request, response, next) => {
-  Course.find({ ownedBy: request.userId })
+  Course.find({ ownedby: request.userId })
     .then(course => {
       if (course) return response.json(course)
       response.status(404).end()
@@ -45,15 +45,17 @@ coursesRouter.get('/:id', (request, response, next) => {
     .catch(err => next(err))
 })
 
-// Modifica contenido del curso por ID //Anda joya
+// Modifica contenido del curso por ID //Anda joya,  TODO: Validar que el curso pertenezca al usuario que mando el post
 coursesRouter.put('/:id', useAuthorization, (request, response, next) => {
   const { id } = request.params
   const course = request.body
 
   const newCourseInfo = {
-    description: course.description,
     name: course.name,
-    type: course.type
+    description: course.description,
+    periodicity: course.periodicity,
+    cost: course.cost,
+    state: course.state
   }
 
   Course.findByIdAndUpdate(id, newCourseInfo, { new: true })
@@ -63,8 +65,8 @@ coursesRouter.put('/:id', useAuthorization, (request, response, next) => {
     .catch(next)
 })
 
-// Borra curso por ID //Sin probar
-coursesRouter.delete('/:id', useAuthorization, async (request, response, next) => {
+// Borra curso por ID //Sin probar TODO: Validar que el curso pertenezca al usuario que mando el post
+coursesRouter.delete('/:id', useAuthorization, async (request, response) => {
   const { id } = request.params
 
   const course = await Course.findByIdAndDelete(id)
@@ -98,7 +100,7 @@ coursesRouter.post('/', useAuthorization, async (request, response) => {
     date: new Date(),
     type: type,
     raiting: [0, 0],
-    ownedBy: request.userId
+    ownedby: request.userId
   })
 
   try {

@@ -32,7 +32,7 @@ contractsRouter.post('/applyRating', useAuthorization, (request, response, next)
   }
   const filter = { _id: contractid, userid: userid }
   const update = { rating: rating }
-  const validStates = ['Aceptado', 'Finalizado']
+  const validStates = ['Aceptada', 'Finalizada']
 
   Contract.find(filter)
     .then(course => {
@@ -75,7 +75,7 @@ contractsRouter.post('/comment', useAuthorization, (request, response) => {
   }
   const filter = { _id: contractid, userid: userid }
   const update = { comment: { state: 'Pendiente', comment: comment } }
-  const validStates = ['Aceptado', 'Finalizado']
+  const contractValidStates = ['Aceptada', 'Finalizada']
 
   Contract.findById(contractid)
     .then(contract => {
@@ -85,7 +85,7 @@ contractsRouter.post('/comment', useAuthorization, (request, response) => {
         if (String(contract.userid) !== userid) {
           return response.status(403).json({ error: 'User is not owner of contract' })
         }
-        if (!validStates.includes(contract.state)) {
+        if (!contractValidStates.includes(contract.state)) {
           return response.status(403).json({ error: 'Contract state is not valid for comment' })
         }
         Contract.findOneAndUpdate(filter, update, { new: true })
@@ -162,11 +162,11 @@ contractsRouter.post('/', useAuthorization, async (request, response) => {
   // Verifica si el usuario que lo pidio es estudiante (otros NO deberian poder)
   User.find({ _id: userid })
     .then(user => {
-      if (user[0].role !== 'Student') return response.status(403).json({ Error: 'user is not Student role' })
+      if (user[0].role !== 'Student') return response.status(403).json({ error: 'user is not Student role' })
       else {
         Contract.find({ userid: userid, courseid: courseid })
           .then(course => {
-            if (course.length !== 0) return response.status(406).json({ Error: 'Contract already exist' })
+            if (course.length !== 0) return response.status(406).json({ error: 'Contract already exist' })
             else {
               const newContract = new Contract({
                 userid,
@@ -175,7 +175,7 @@ contractsRouter.post('/', useAuthorization, async (request, response) => {
                 usercontactmail,
                 usercontacttime,
                 usermessage,
-                state: 'Solicitado',
+                state: 'Solicitada',
                 date: new Date()
               })
 
@@ -194,21 +194,54 @@ contractsRouter.post('/', useAuthorization, async (request, response) => {
 })
 
 // Actualiza el estado del contrato
-// TODO: Deberia verificar que el que modifico el contrato sea el profesor o el usuario que lo creo
+// TODO: Mejorar la logica para que contemple el estado anterior
 contractsRouter.put('/', useAuthorization, async (request, response) => {
   const { contractid, state } = request.body
-  const validStates = ['Aceptado', 'Finalizado', 'Cancelado']
-  if (!validStates.includes(state)) {
-    response.status(400).json({ error: 'invalid state' })
-  } else {
-    const filter = { _id: contractid }
-    const update = { state: state }
+  const userid = request.userId
+  const validStatesTeacher = ['Aceptada', 'Finalizada', 'Cancelada']
+  const validStatesStudent = ['Finalizada', 'Cancelada']
 
-    Contract.findOneAndUpdate(filter, update, { new: true })
-      .then(updatedContract => {
-        response.status(200).json(updatedContract)
-      }).catch(err => response.status(500).json(err))
-  }
+  Contract.findById(contractid)
+    .then(contract => {
+      if (!contract) {
+        response.status(404).json({ error: 'Contract does not exist' })
+      } else {
+        if (String(contract.userid) !== userid) {
+          Course.findById(contract.courseid)
+            .then(course => {
+              if (!course) {
+                response.status(404).json({ error: 'Course in contract does not exist' })
+              } else {
+                if (String(course.ownedby) === userid) {
+                  if (!validStatesTeacher.includes(state)) {
+                    response.status(400).json({ error: 'invalid state' })
+                  } else {
+                    const filter = { _id: contractid }
+                    const update = { state: state }
+                    Contract.findOneAndUpdate(filter, update, { new: true })
+                      .then(updatedContract => {
+                        response.status(200).json(updatedContract)
+                      }).catch(err => response.status(500).json(err))
+                  }
+                } else {
+                  response.status(403).json({ error: 'user is not owner of course or contract' })
+                }
+              }
+            }).catch(err => response.status(500).json(err))
+        } else {
+          if (!validStatesStudent.includes(state)) {
+            response.status(400).json({ error: 'invalid state' })
+          } else {
+            const filter = { _id: contractid }
+            const update = { state: state }
+            Contract.findOneAndUpdate(filter, update, { new: true })
+              .then(updatedContract => {
+                response.status(200).json(updatedContract)
+              }).catch(err => response.status(500).json(err))
+          }
+        }
+      }
+    }).catch(err => response.status(500).json(err))
 })
 
 module.exports = contractsRouter

@@ -31,7 +31,7 @@ const contractSchema = new Schema({
     type: String,
     required: true
   },
-  comments: {
+  comment: {
     type: {
       state: {
         type: String

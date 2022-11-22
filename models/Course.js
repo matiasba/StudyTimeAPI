@@ -26,7 +26,7 @@ const courseSchema = new Schema({
     required: true
   },
   date: Date,
-  raiting: [Number, Number],
+  rating: [Number, Number],
   ownedby: {
     type: Schema.Types.ObjectId,
     ref: 'Users',

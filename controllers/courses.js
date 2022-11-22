@@ -99,7 +99,7 @@ coursesRouter.post('/', useAuthorization, async (request, response) => {
     periodicity,
     date: new Date(),
     type: type,
-    raiting: [0, 0],
+    rating: [0, 0],
     ownedby: request.userId
   })
 

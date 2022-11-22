@@ -17,15 +17,22 @@ contractsRouter.get('/studentContracts', useAuthorization, (request, response, n
     .catch(err => next(err))
 })
 
-// Modifica el raiting del contrato
-contractsRouter.post('/applyRaiting', useAuthorization, (request, response, next) => {
+// Modifica el rating del contrato
+contractsRouter.post('/applyRating', useAuthorization, (request, response, next) => {
   const {
     contractid,
-    raiting
+    rating
   } = request.body
   const userid = request.userId
+  if (!contractid || !rating) {
+    return response.status(404).json({ error: 'Missing arguments' })
+  }
+  if (rating < 0 || rating > 5) {
+    return response.status(404).json({ error: 'Rating value is invalid' })
+  }
   const filter = { _id: contractid, userid: userid }
-  const update = { raiting: raiting }
+  const update = { rating: rating }
+  const validStates = ['Aceptado', 'Finalizado']
 
   Contract.find(filter)
     .then(course => {
@@ -34,12 +41,93 @@ contractsRouter.post('/applyRaiting', useAuthorization, (request, response, next
       } else {
         if (course[0].rating) {
           return response.status(403).json({ error: 'Contract already rated' })
-        } else {
-          Contract.findOneAndUpdate(filter, update, { new: true })
-            .then(updatedContract => {
-              response.status(200).json(updatedContract)
-            }).catch(err => response.status(500).json(err))
         }
+        if (!validStates.includes(course[0].state)) {
+          return response.status(403).json({ error: 'Contract state is not valid for rating' })
+        }
+        Contract.findByIdAndUpdate(contractid, update, { new: true })
+          .then(updatedContract => {
+            Course.findById(updatedContract.courseid)
+              .then(course => {
+                const newRatingCount = course.rating[1] + 1
+                const newRating = ((course.rating[0] * course.rating[1]) + rating) / newRatingCount
+                const courseUpdate = { rating: [newRating, newRatingCount] }
+                Course.findByIdAndUpdate(updatedContract.courseid, courseUpdate, { new: true })
+                  .then(
+                    response.status(200).json(updatedContract)
+                  ).catch(err => response.status(500).json(err))
+              }).catch(err => response.status(500).json(err))
+          }).catch(err => response.status(500).json(err))
+      }
+    }).catch(err => response.status(500).json(err))
+})
+
+// Aplica o modifica commentario en curso
+// El comentario siempre queda en estado "Pendiente" hasta que el profesor lo autorice
+contractsRouter.post('/comment', useAuthorization, (request, response) => {
+  const {
+    contractid,
+    comment
+  } = request.body
+  const userid = request.userId
+  if (!contractid || !comment) {
+    return response.status(404).json({ error: 'Missing arguments' })
+  }
+  const filter = { _id: contractid, userid: userid }
+  const update = { comment: { state: 'Pendiente', comment: comment } }
+  const validStates = ['Aceptado', 'Finalizado']
+
+  Contract.findById(contractid)
+    .then(contract => {
+      if (!contract) {
+        return response.status(404).json({ error: 'Contract does not exist' })
+      } else {
+        if (String(contract.userid) !== userid) {
+          return response.status(403).json({ error: 'User is not owner of contract' })
+        }
+        if (!validStates.includes(contract.state)) {
+          return response.status(403).json({ error: 'Contract state is not valid for comment' })
+        }
+        Contract.findOneAndUpdate(filter, update, { new: true })
+          .then(updatedContract => {
+            response.status(200).json(updatedContract)
+          }).catch(err => response.status(500).json(err))
+      }
+    })
+})
+
+// Permite modificar el estado de un comentario por el profesor owner del curso
+contractsRouter.put('/moderateComment', useAuthorization, (request, response) => {
+  const validStates = ['Bloqueado', 'Aceptado']
+  const {
+    contractid,
+    state
+  } = request.body
+  const userid = request.userId
+
+  if (!contractid || !state) {
+    return response.status(404).json({ error: 'Missing arguments' })
+  }
+  if (!validStates.includes(state)) {
+    return response.status(403).json({ error: 'New state is invalid' })
+  }
+
+  Contract.findById(contractid)
+    .then(contract => {
+      if (!contract) {
+        return response.status(404).json({ error: 'Contract does not exist' })
+      } else {
+        const update = { comment: { state: state, comment: contract.comment.comment } }
+        Course.findById(contract.courseid).then(course => {
+          if (String(course.ownedby) !== userid) {
+            return response.status(403).json({ error: 'User is not owner of course' })
+          } else {
+            Contract.findByIdAndUpdate(contractid, update, { new: true })
+              .then(updatedContract => {
+                response.status(200).json(updatedContract)
+              }).catch(err => response.status(500).json(err))
+          }
+        }).catch(err => response.status(500).json(err))
       }
     })
 })

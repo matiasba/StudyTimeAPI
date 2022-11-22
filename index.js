@@ -11,6 +11,7 @@ const handleErrors = require('./middleware/handleErrors.js')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const coursesRouter = require('./controllers/courses')
+const contractsRouter = require('./controllers/contracts')
 
 app.use(cors())
 app.use(express.json())
@@ -26,6 +27,7 @@ app.get('/', (request, response) => {
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/courses', coursesRouter)
+app.use('/api/contracts', contractsRouter)
 
 app.use(notFound)
 app.use(handleErrors)

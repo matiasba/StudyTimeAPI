@@ -25,20 +25,6 @@ const courseSchema = new Schema({
     type: String,
     required: true
   },
-  comments: {
-    type: [{
-      ownedby: {
-        type: Schema.Types.ObjectId,
-        ref: 'Users'
-      },
-      state: {
-        type: String
-      },
-      comment: {
-        type: String
-      }
-    }]
-  },
   date: Date,
   raiting: [Number, Number],
   ownedby: {

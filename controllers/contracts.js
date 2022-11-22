@@ -17,6 +17,33 @@ contractsRouter.get('/studentContracts', useAuthorization, (request, response, n
     .catch(err => next(err))
 })
 
+// Modifica el raiting del contrato
+contractsRouter.post('/applyRaiting', useAuthorization, (request, response, next) => {
+  const {
+    contractid,
+    raiting
+  } = request.body
+  const userid = request.userId
+  const filter = { _id: contractid, userid: userid }
+  const update = { raiting: raiting }
+
+  Contract.find(filter)
+    .then(course => {
+      if (course.length === 0) {
+        return response.status(404).json({ error: 'Contract does not exist' })
+      } else {
+        if (course[0].rating) {
+          return response.status(403).json({ error: 'Contract already rated' })
+        } else {
+          Contract.findOneAndUpdate(filter, update, { new: true })
+            .then(updatedContract => {
+              response.status(200).json(updatedContract)
+            }).catch(err => response.status(500).json(err))
+        }
+      }
+    })
+})
+
 // Devuelve todos los contratos del estudiante
 // TODO
 contractsRouter.get('/teacherContracts', useAuthorization, (request, response, next) => {

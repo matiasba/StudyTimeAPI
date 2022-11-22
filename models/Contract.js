@@ -41,7 +41,7 @@ const contractSchema = new Schema({
       }
     }
   },
-  raiting: Number,
+  rating: Number,
   date: Date
 })
 

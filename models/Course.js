@@ -29,7 +29,7 @@ const courseSchema = new Schema({
   rating: [Number, Number],
   ownedby: {
     type: Schema.Types.ObjectId,
-    ref: 'Users',
+    ref: 'User',
     required: true
   }
 })
@@ -42,6 +42,4 @@ courseSchema.set('toJSON', {
   }
 })
 
-const Course = model('Course', courseSchema)
-
-module.exports = Course
+module.exports = model('Course', courseSchema)

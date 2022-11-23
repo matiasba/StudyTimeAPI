@@ -18,11 +18,7 @@ const userSchema = new Schema({
   passwordHash: {
     type: String,
     required: true
-  },
-  Courses: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Course'
-  }]
+  }
 })
 
 userSchema.set('toJSON', {
@@ -36,7 +32,4 @@ userSchema.set('toJSON', {
 })
 
 userSchema.plugin(uniqueValidator)
-
-const User = model('User', userSchema)
-
-module.exports = User
+module.exports = model('User', userSchema)

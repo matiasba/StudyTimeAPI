@@ -65,14 +65,29 @@ coursesRouter.put('/:id', useAuthorization, (request, response, next) => {
     .catch(next)
 })
 
-// Borra curso por ID //Sin probar TODO: Validar que el curso pertenezca al usuario que mando el post
+// Borra curso por ID
+// No se usa
 coursesRouter.delete('/:id', useAuthorization, async (request, response) => {
   const { id } = request.params
+  const userid = request.userId
 
-  const course = await Course.findByIdAndDelete(id)
-  if (course === null) return response.sendStatus(404)
-  response.status(204).end()
+  Course.findOneById(id)
+    .then(course => {
+      if (!course) {
+        return response.status(404).json({ error: 'Course does not exist' })
+      } else {
+        if (String(course.ownedby) !== userid) {
+          return response.status(403).json({ error: 'Course does not belong to user' })
+        } else {
+          Course.findByIdAndDelete(id)
+            .then(status => {
+              return response.status(200).json({ error: 'Course deleted' })
+            }).catch(err => response.status(500).json(err))
+        }
+      }
+    }).catch(err => response.status(500).json(err))
 })
+
 // Crea nuevo curso //Anda joya
 coursesRouter.post('/', useAuthorization, async (request, response) => {
   const {

@@ -2,12 +2,6 @@ const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/User')
 
-// Devuelve todos los usuarios (tiene sentido?)
-usersRouter.get('/', async (request, response) => {
-  const users = await User.find({}).select('name -passwordHash')
-  response.json(users)
-})
-
 // Creacion de usuario
 usersRouter.post('/', async (request, response) => {
   const { body } = request

@@ -1,14 +1,19 @@
 const { Schema, model } = require('mongoose')
 
 const contractSchema = new Schema({
-  userid: {
+  studentid: {
     type: Schema.Types.ObjectId,
-    ref: 'Users',
+    ref: 'User',
     required: true
   },
   courseid: {
     type: Schema.Types.ObjectId,
-    ref: 'Courses',
+    ref: 'Course',
+    required: true
+  },
+  teacherid: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
   usercontactphone: {
@@ -53,6 +58,4 @@ contractSchema.set('toJSON', {
   }
 })
 
-const Contract = model('Contract', contractSchema)
-
-module.exports = Contract
+module.exports = model('Contract', contractSchema)

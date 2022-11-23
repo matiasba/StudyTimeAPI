@@ -49,6 +49,7 @@ coursesRouter.get('/:id', (request, response, next) => {
 coursesRouter.put('/:id', useAuthorization, (request, response, next) => {
   const { id } = request.params
   const course = request.body
+  const userid = request.userId
 
   const newCourseInfo = {
     name: course.name,
@@ -58,11 +59,21 @@ coursesRouter.put('/:id', useAuthorization, (request, response, next) => {
     state: course.state
   }
 
-  Course.findByIdAndUpdate(id, newCourseInfo, { new: true })
-    .then(result => {
-      response.json(result)
-    })
-    .catch(next)
+  Course.findById(id)
+    .then(course => {
+      if (!course) {
+        return response.status(404).json({ error: 'Course does not exist' })
+      } else {
+        if (String(course.ownedby) !== userid) {
+          return response.status(403).json({ error: 'Course does not belong to user' })
+        } else {
+          Course.findByIdAndUpdate(id, newCourseInfo, { new: true })
+            .then(status => {
+              return response.status(200).json(status)
+            }).catch(err => response.status(500).json(err))
+        }
+      }
+    }).catch(err => response.status(500).json(err))
 })
 
 // Borra curso por ID
@@ -71,7 +82,7 @@ coursesRouter.delete('/:id', useAuthorization, async (request, response) => {
   const { id } = request.params
   const userid = request.userId
 
-  Course.findOneById(id)
+  Course.findById(id)
     .then(course => {
       if (!course) {
         return response.status(404).json({ error: 'Course does not exist' })

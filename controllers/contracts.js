@@ -5,8 +5,12 @@ const Course = require('../models/Course')
 const Contract = require('../models/Contract')
 
 // Devuelve todos los contratos del estudiante o de un courso especifico si se la manda la query ?courseid=
-contractsRouter.get('/', useAuthorization, (request, response, next) => {
+contractsRouter.get('/:id', useAuthorization, (request, response, next) => {
+  const { id } = request.params
   const filter = { $or: [{ studentid: request.userId }, { teacherid: request.userId }] }
+  if (id && id !== 'undefined') {
+    filter.courseid = id
+  }
   if (request.query.courseid) {
     filter.courseid = request.query.courseid
   }

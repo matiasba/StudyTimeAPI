@@ -1,6 +1,7 @@
 const Course = require('../models/Course')
 const useAuthorization = require('../middleware/userAutorization')
 const coursesRouter = require('express').Router()
+const ObjectId = require('mongodb').ObjectID
 
 // Devuelve todos los cursos //Anda joya, no se usa en el front pero sirve para debuggear
 coursesRouter.get('/', (request, response, next) => {
@@ -38,6 +39,48 @@ coursesRouter.get('/:id', (request, response, next) => {
   const { id } = request.params
 
   Course.findById(id)
+    .then(course => {
+      if (course) return response.json(course)
+      response.status(404).end()
+    })
+    .catch(err => next(err))
+})
+
+coursesRouter.get('/details/:id', (request, response, next) => {
+  const { id } = request.params
+  Course.aggregate([
+    { $match: { _id: ObjectId(id) } },
+    {
+      $lookup:
+      {
+        from: 'contracts',
+        let: { courseid: '$_id' },
+        pipeline: [{
+          $match: {
+            $expr: {
+              $and: [{ $eq: ['$courseid', '$$courseid'] }, { $eq: ['$comment.state', 'Aceptado'] }]
+            }
+          }
+        },
+        { $project: { 'comment.comment': 1 } }],
+        as: 'contracts'
+      }
+    },
+    {
+      $lookup:
+      {
+        from: 'users',
+        let: { ownedby: '$ownedby' },
+        pipeline: [{
+          $match: {
+            $expr: { $eq: ['$_id', '$$ownedby'] }
+          }
+        },
+        { $project: { name: 1, qualifications: 1 } }],
+        as: 'teacher'
+      }
+    }
+  ])
     .then(course => {
       if (course) return response.json(course)
       response.status(404).end()

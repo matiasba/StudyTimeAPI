@@ -34,28 +34,33 @@ contractsRouter.post('/applyRating', useAuthorization, (request, response, next)
   if (rating < 0 || rating > 5) {
     return response.status(404).json({ error: 'Rating value is invalid' })
   }
-  const filter = { _id: contractid, studentid: userid }
   const update = { rating: rating }
   const validStates = ['Aceptada', 'Finalizada']
 
-  Contract.find(filter)
-    .then(course => {
-      if (course.length === 0) {
+  Contract.findById(contractid)
+    .then(contract => {
+      if (!contract) {
         return response.status(404).json({ error: 'Contract does not exist' })
       } else {
-        if (course[0].rating) {
-          return response.status(403).json({ error: 'Contract already rated' })
-        }
-        if (!validStates.includes(course[0].state)) {
+        if (!validStates.includes(contract.state)) {
           return response.status(403).json({ error: 'Contract state is not valid for rating' })
+        }
+        if (String(contract.studentid) !== userid) {
+          return response.status(403).json({ error: 'User is not studentid of contract' })
         }
         Contract.findByIdAndUpdate(contractid, update, { new: true })
           .then(updatedContract => {
             Course.findById(updatedContract.courseid)
               .then(course => {
-                const newRatingCount = course.rating[1] + 1
-                const newRating = ((course.rating[0] * course.rating[1]) + rating) / newRatingCount
-                const courseUpdate = { rating: [newRating, newRatingCount] }
+                let courseUpdate
+                if (course.rating) {
+                  const newRating = (((course.rating[0] * course.rating[1]) - contract.rating) + rating) / course.rating[1]
+                  courseUpdate = { rating: [newRating, course.rating[1]] }
+                } else {
+                  const newRatingCount = course.rating[1] + 1
+                  const newRating = ((course.rating[0] * course.rating[1]) + rating) / newRatingCount
+                  courseUpdate = { rating: [newRating, newRatingCount] }
+                }
                 Course.findByIdAndUpdate(updatedContract.courseid, courseUpdate, { new: true })
                   .then(
                     response.status(200).json(updatedContract)
@@ -87,7 +92,7 @@ contractsRouter.post('/comment', useAuthorization, (request, response) => {
         return response.status(404).json({ error: 'Contract does not exist' })
       } else {
         if (String(contract.studentid) !== userid) {
-          return response.status(403).json({ error: 'User is not owner of contract' })
+          return response.status(403).json({ error: 'User is not studentid of contract' })
         }
         if (!contractValidStates.includes(contract.state)) {
           return response.status(403).json({ error: 'Contract state is not valid for comment' })

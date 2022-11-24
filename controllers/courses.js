@@ -109,6 +109,7 @@ coursesRouter.post('/', useAuthorization, async (request, response) => {
     type,
     state
   } = request.body
+  const splitTypes = type.split(',')
 
   // Tiene que haber una mejor manera de verificar esto
   if (!description && !name && !description && !cost && !periodicity && !type && !state) {
@@ -124,7 +125,7 @@ coursesRouter.post('/', useAuthorization, async (request, response) => {
     cost,
     periodicity,
     date: new Date(),
-    type: type,
+    type: splitTypes,
     rating: [0, 0],
     ownedby: request.userId
   })

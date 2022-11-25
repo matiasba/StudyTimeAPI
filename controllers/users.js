@@ -6,9 +6,42 @@ const useAuthorization = require('../middleware/userAutorization')
 // Devuelve los datos del usuario que lo llama
 usersRouter.get('/', useAuthorization, (request, response, next) => {
   User.findById(request.userId)
-    .then(course => {
-      if (course) return response.json(course)
+    .then(user => {
+      if (user) return response.json(user)
       response.status(404).end()
+    })
+    .catch(err => next(err))
+})
+
+// Modificar datos del usuario
+usersRouter.post('/editUser', useAuthorization, (request, response, next) => {
+  const {
+    name,
+    education,
+    phone,
+    experience,
+    titles
+  } = request.body
+  const userid = request.userId
+
+  if (!name || !phone || !education) {
+    return response.status(404).json({ error: 'Missing arguments' })
+  }
+
+  User.findById(userid)
+    .then(user => {
+      const userUpdate = { name: name, education: education, phone: phone }
+      if (String(user.role) === 'Teacher') {
+        if (!experience || !titles) {
+          return response.status(404).json({ error: 'Missing arguments' })
+        }
+        userUpdate.experience = experience
+        userUpdate.titles = titles
+      }
+      User.findByIdAndUpdate(userid, userUpdate, { new: true })
+        .then(
+          response.status(200).json(userid)
+        ).catch(err => response.status(500).json(err))
     })
     .catch(err => next(err))
 })

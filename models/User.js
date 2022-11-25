@@ -11,7 +11,22 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
-  qualifications: {
+  titles: {
+    type: String
+  },
+  phone: {
+    type: String,
+    required: true
+  },
+  birthdate: {
+    type: Date,
+    required: true
+  },
+  education: {
+    type: String,
+    required: true
+  },
+  experience: {
     type: String
   },
   name: {

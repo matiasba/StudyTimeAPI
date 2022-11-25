@@ -5,9 +5,14 @@ const User = require('../models/User')
 // Creacion de usuario
 usersRouter.post('/', async (request, response) => {
   const { body } = request
-  const { email, name, role, password, qualifications } = body
+  const { email, name, role, password, phone, birthdate, education, titles, experience } = body
+  const validEducation = ['Primaria', 'Secundaria', 'Terciario', 'Universitario']
   // Tiene que haber una mejor manera de verificar esto
-  if ((!email || !name || !role || !password) || (role === 'Teacher' && !qualifications) || (role !== 'Teacher' && role !== 'Student')) {
+  if ((!email || !name || !role || !password || !birthdate || !phone || !education) ||
+  (role === 'Teacher' && !titles && !experience) ||
+  (role !== 'Teacher' && role !== 'Student') ||
+  (!validEducation.includes(education))
+  ) {
     response.status(400).json({ error: 'missing or invalid fields' })
     return
   }
@@ -19,10 +24,13 @@ usersRouter.post('/', async (request, response) => {
     email,
     name,
     role,
+    birthdate,
+    phone,
     passwordHash
   })
-  if (qualifications && role === 'Teacher') {
-    user.qualifications = qualifications
+  if (role === 'Teacher') {
+    user.titles = titles
+    user.experience = experience
   }
 
   let error

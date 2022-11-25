@@ -4,7 +4,7 @@ Esta api se construyo para ser utilizada con el siguiente [FrontEnd en React ](h
 # Deploy
 ### Metodo facil (Docker compose)
 #### Requisitos
-- Instalacion local de mongoDB ✔️
+- Instalacion local de docker y docker-compose (incluido en docker-desktop)✔️
 #### Instrucciones
 Copiar example.env a .env
 ```

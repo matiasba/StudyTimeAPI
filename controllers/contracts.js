@@ -140,7 +140,7 @@ contractsRouter.put('/moderateComment', useAuthorization, (request, response) =>
             .then(updatedContract => {
               if (state === 'Bloqueado') {
                 User.findById(updatedContract.studentid).then(user => {
-                  bloquedMail.to = user.mail
+                  bloquedMail.to = user.email
                   bloquedMail.text = `Su profesor a bloqueado el siguiente comentario: ${updatedContract.comment.comment}`
                   sendMail(bloquedMail)
                 })

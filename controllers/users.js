@@ -6,7 +6,7 @@ const User = require('../models/User')
 usersRouter.post('/', async (request, response) => {
   const { body } = request
   const { email, name, role, password, phone, birthdate, education, titles, experience } = body
-  const validEducation = ['Primaria', 'Secundaria', 'Terciario', 'Universitario']
+  const validEducation = ['Primario', 'Secundario', 'Terciario', 'Universitario']
   // Tiene que haber una mejor manera de verificar esto
   if ((!email || !name || !role || !password || !birthdate || !phone || !education) ||
   (role === 'Teacher' && !titles && !experience) ||

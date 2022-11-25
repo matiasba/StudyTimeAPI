@@ -2,6 +2,9 @@ const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/User')
 const useAuthorization = require('../middleware/userAutorization')
+const crypto = require("crypto");
+const { sendMail } = require('./mail');
+
 
 // Devuelve los datos del usuario que lo llama
 usersRouter.get('/', useAuthorization, (request, response, next) => {
@@ -91,5 +94,35 @@ usersRouter.post('/', async (request, response) => {
     response.status(500).json(error)
   }
 })
+
+usersRouter.put('/resetPassword', (request, response) => {
+  const { email } = request.body
+  const newpassword = crypto.randomBytes(12).toString('hex');
+
+  const saltRounds = 10
+  bcrypt.hash(newpassword, saltRounds).then(passwordHash => {
+    console.log(passwordHash)
+    User.findOneAndUpdate({email: email},{passwordHash: passwordHash}, { new: true })
+    .then(user => {
+      if (user) {
+        const resetMail = {
+          from: process.env.MAIL_USERNAME + '@gmail.com',
+          subject: 'StudyTime: Tu password fue reseteada',
+          to: user.email,
+          text: `Su password fue reseteada, su nueva password es: ${newpassword}`
+        }
+        sendMail(resetMail)
+        return response.status(200).json({ error: 'password send' })
+      } else {
+        console.log("sali por el else")
+        return response.status(200).json({ error: 'password send' })
+      }
+    }).catch(err => {
+      console.log("sali por el catch")
+      response.status(500).json(err)
+    })
+  })
+})
+
 
 module.exports = usersRouter

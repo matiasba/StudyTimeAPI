@@ -26,7 +26,8 @@ usersRouter.post('/', async (request, response) => {
     role,
     birthdate,
     phone,
-    passwordHash
+    passwordHash,
+    education
   })
   if (role === 'Teacher') {
     user.titles = titles
@@ -42,6 +43,7 @@ usersRouter.post('/', async (request, response) => {
   if (error == null) {
     response.status(201).json('created')
   } else {
+    console.log(error)
     response.status(500).json(error)
   }
 })

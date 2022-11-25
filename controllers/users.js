@@ -107,9 +107,9 @@ usersRouter.put('/resetPassword', (request, response) => {
       if (user) {
         const resetMail = {
           from: process.env.MAIL_USERNAME + '@gmail.com',
-          subject: 'StudyTime: Tu password fue reseteada',
+          subject: 'StudyTime: Tu contraseña fue reseteada',
           to: user.email,
-          text: `Su password fue reseteada, su nueva password es: ${newpassword}`
+          text: `Su contraseña fue reseteada, su nueva contraseña es: ${newpassword}`
         }
         sendMail(resetMail)
         return response.status(200).json({ error: 'password send' })

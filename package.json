@@ -1,7 +1,7 @@
 {
-  "name": "cursos_api",
+  "name": "studytypeapi",
   "version": "1.0.0",
-  "description": "Super api de cursos",
+  "description": "Api para StudyTime",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",

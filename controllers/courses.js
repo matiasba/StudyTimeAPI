@@ -16,7 +16,11 @@ coursesRouter.get('/', (request, response, next) => {
 // Devuelve cursos aplicando filtros ordenado y limites //Anda joya
 coursesRouter.get('/filter', (request, response, next) => {
   const filter = `{"name": { "$regex": ".*${request.query.name || ''}.*", "$options": "i" },"type": { "$regex": ".*${request.query.type || ''}.*", "$options": "i" },"state": "Publicado"}`
-  Course.find(JSON.parse(filter)).sort(request.query.orderBy).limit(request.query.limit)
+  let sort = {}
+  if (String(request.query.orderBy) === "true") {
+    sort =  {"rating.0": -1}
+  }
+  Course.find(JSON.parse(filter)).sort(sort).limit(request.query.limit)
     .then(course => {
       if (course) return response.json(course)
       response.status(404).end()

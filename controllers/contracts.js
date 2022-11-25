@@ -54,7 +54,7 @@ contractsRouter.post('/applyRating', useAuthorization, (request, response, next)
             Course.findById(updatedContract.courseid)
               .then(course => {
                 let courseUpdate
-                if (course.rating) {
+                if (contract.rating) {
                   const newRating = (((course.rating[0] * course.rating[1]) - contract.rating) + rating) / course.rating[1]
                   courseUpdate = { rating: [newRating, course.rating[1]] }
                 } else {

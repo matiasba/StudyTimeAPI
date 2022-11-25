@@ -4,9 +4,10 @@ services:
     restart: always
     build: .
     ports:
-      - 80:3000
+      - 3001:3001
     volumes:
-      - ./:/code
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
   mongo:
     image: mongo
     ports:

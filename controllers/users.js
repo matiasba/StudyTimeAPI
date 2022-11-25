@@ -1,6 +1,17 @@
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/User')
+const useAuthorization = require('../middleware/userAutorization')
+
+// Devuelve los datos del usuario que lo llama
+usersRouter.get('/', useAuthorization, (request, response, next) => {
+  User.findById(request.userId)
+    .then(course => {
+      if (course) return response.json(course)
+      response.status(404).end()
+    })
+    .catch(err => next(err))
+})
 
 // Creacion de usuario
 usersRouter.post('/', async (request, response) => {

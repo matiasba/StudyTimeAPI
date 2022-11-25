@@ -76,7 +76,7 @@ coursesRouter.get('/details/:id', (request, response, next) => {
             $expr: { $eq: ['$_id', '$$ownedby'] }
           }
         },
-        { $project: { name: 1, qualifications: 1 } }],
+        { $project: { name: 1, titles: 1, experience: 1 } }],
         as: 'teacher'
       }
     }

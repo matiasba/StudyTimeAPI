@@ -3,6 +3,7 @@ const User = require('../models/User')
 const useAuthorization = require('../middleware/userAutorization')
 const Course = require('../models/Course')
 const Contract = require('../models/Contract')
+const { sendMail } = require('./mail')
 
 // Devuelve todos los contratos del estudiante o de un courso especifico si se la manda la query ?courseid=
 contractsRouter.get('/:id', useAuthorization, (request, response, next) => {
@@ -114,6 +115,11 @@ contractsRouter.put('/moderateComment', useAuthorization, (request, response) =>
   } = request.body
   const userid = request.userId
 
+  const bloquedMail = {
+    from: process.env.MAIL_USERNAME + '@gmail.com',
+    subject: 'StudyTime: Tu comentario fue bloqueado'
+  }
+
   if (!contractid || !state) {
     return response.status(404).json({ error: 'Missing arguments' })
   }
@@ -132,6 +138,13 @@ contractsRouter.put('/moderateComment', useAuthorization, (request, response) =>
         } else {
           Contract.findByIdAndUpdate(contractid, update, { new: true })
             .then(updatedContract => {
+              if (state === 'Bloqueado') {
+                User.findById(updatedContract.studentid).then(user => {
+                  bloquedMail.to = user.mail
+                  bloquedMail.text = `Su profesor a bloqueado el siguiente comentario: ${updatedContract.comment.comment}`
+                  sendMail(bloquedMail)
+                })
+              }
               response.status(200).json(updatedContract)
             }).catch(err => response.status(500).json(err))
         }

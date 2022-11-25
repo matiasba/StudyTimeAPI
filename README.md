@@ -45,3 +45,7 @@ Iniciar server
 ```
 npm start
 ```
+
+
+# Uso:
+### En el repositorio se incluye una Postman Collection con todos los Endpoints y ejemplos de payloads

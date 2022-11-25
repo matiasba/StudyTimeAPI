@@ -1,0 +1,632 @@
+{
+	"info": {
+		"_postman_id": "41fcdbd6-853d-4b77-894d-ed8cce674ecf",
+		"name": "StudyTimeAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Teacher",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"carlos\",\r\n  \"password\": \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Course",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzN2E5NTc5MmNmODUzMGIwYzZiMzUyYyIsInVzZXJuYW1lIjoicGlub2NobyIsInJvbGUiOiJUZWFjaGVyIiwiaWF0IjoxNjY4OTc4MzI1LCJleHAiOjE2Njk1ODMxMjV9.i0TrJ9JEiiOosB5hqqNW2jM6qGfLuIeDw4Cq4FGilj4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Etica Romana\",\r\n  \"state\": \"Publicado\",\r\n  \"description\": \"Aprende a deslumbrar a la gente con tus frases\",\r\n  \"type\": \"Etica Romana,Filosofia,Universitario\",\r\n  \"cost\": \"$500 por sesion\",\r\n  \"periodicity\": \"Todos los viernes de 19 a 19:30\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/courses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"carlos\",\r\n  \"name\": \"Carlos Macabro\",\r\n  \"password\": \"12345\",\r\n  \"role\": \"Teacher\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Courses OwnedBy teacher",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNzdlMzJiYWJjZTE5MDNhYTFkOGZlNSIsInVzZXJuYW1lIjoiY2FybG9zIiwiaWF0IjoxNjY4OTY3MzcxLCJleHAiOjE2Njk1NzIxNzF9.-5ZZPAtQsO854CwbgQhdf1SOYAfCrQsLw8YGqd1fGH4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/courses/fromTeacher",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"courses",
+								"fromTeacher"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Moderate Comment by contract",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNzdlMzJiYWJjZTE5MDNhYTFkOGZlNSIsInVzZXJuYW1lIjoiY2FybG9zIiwicm9sZSI6IlRlYWNoZXIiLCJpYXQiOjE2NjkwOTU5MTMsImV4cCI6MTY2OTcwMDcxM30.yytmDaSItbyVRuhI39Ti33qaUY6Wg1WWNRR3tgaFrr8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contractid\": \"637bf7473ea0bd34ca2d450d\",\r\n  \"state\": \"Bloqueado\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/contracts/moderateComment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"contracts",
+								"moderateComment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Student",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"pepe\",\r\n  \"password\": \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"Pedro\",\r\n  \"name\": \"Pedro Ibarra\",\r\n  \"password\": \"12345\",\r\n  \"role\": \"Student\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rate Contract",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzN2E4ODljMmNmODUzMGIwYzZiMzRlYyIsInVzZXJuYW1lIjoicGVwZSIsInJvbGUiOiJTdHVkZW50IiwiaWF0IjoxNjY5MDY4NTk5LCJleHAiOjE2Njk2NzMzOTl9.TwEsjKHS2dgMEQPP8OVg7HdcofxcDC4U2J6d5LX67LA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contractid\": \"637d5a2af06284c0f700c353\",\r\n  \"rating\": \"4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/contracts/applyRating",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"contracts",
+								"applyRating"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Contract",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzN2E4ODljMmNmODUzMGIwYzZiMzRlYyIsInVzZXJuYW1lIjoicGVwZSIsInJvbGUiOiJTdHVkZW50IiwiaWF0IjoxNjY5MDY4NTk5LCJleHAiOjE2Njk2NzMzOTl9.TwEsjKHS2dgMEQPP8OVg7HdcofxcDC4U2J6d5LX67LA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"courseid\": \"637a71dc2bf6a37965e62560\",\r\n  \"usercontactphone\": \"5419941541541\",\r\n  \"usercontactmail\": \"pepe@gmail.com\",\r\n  \"usercontacttime\": \"Cualquier hora brother\",\r\n  \"usermessage\": \"Necesito ayuda con esto, por favor contactame cuanto antes\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/contracts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"contracts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Comment Contract",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzN2E4ODljMmNmODUzMGIwYzZiMzRlYyIsInVzZXJuYW1lIjoicGVwZSIsInJvbGUiOiJTdHVkZW50IiwiaWF0IjoxNjY5MDY4NTk5LCJleHAiOjE2Njk2NzMzOTl9.TwEsjKHS2dgMEQPP8OVg7HdcofxcDC4U2J6d5LX67LA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contractid\": \"637d5a2af06284c0f700c353\",\r\n  \"comment\": \"Hermoso curso, aprendi muchisimo :)\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/contracts/comment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"contracts",
+								"comment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Generic",
+			"item": [
+				{
+					"name": "Get top 2 courses by rating",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNzdlMzJiYWJjZTE5MDNhYTFkOGZlNSIsInVzZXJuYW1lIjoiY2FybG9zIiwiaWF0IjoxNjY4ODY1Mjg2LCJleHAiOjE2Njk0NzAwODZ9.PF-pbPeglinp6SvK-dke-4E4PZ9V6TDMr6mvm46eDWw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/courses/filter?orderBy=rating: -1&limit=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"courses",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "orderBy",
+									"value": "rating: -1"
+								},
+								{
+									"key": "limit",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Course by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNzdlMzJiYWJjZTE5MDNhYTFkOGZlNSIsInVzZXJuYW1lIjoiY2FybG9zIiwiaWF0IjoxNjY4ODY1Mjg2LCJleHAiOjE2Njk0NzAwODZ9.PF-pbPeglinp6SvK-dke-4E4PZ9V6TDMr6mvm46eDWw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/courses/637a71dc2bf6a37965e62560",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"courses",
+								"637a71dc2bf6a37965e62560"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Course Details by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNzdlMzJiYWJjZTE5MDNhYTFkOGZlNSIsInVzZXJuYW1lIjoiY2FybG9zIiwiaWF0IjoxNjY4ODY1Mjg2LCJleHAiOjE2Njk0NzAwODZ9.PF-pbPeglinp6SvK-dke-4E4PZ9V6TDMr6mvm46eDWw",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/courses/details/637ef39ea874da243c6685f5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"courses",
+								"details",
+								"637ef39ea874da243c6685f5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Contract State",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzN2E4ODljMmNmODUzMGIwYzZiMzRlYyIsInVzZXJuYW1lIjoicGVwZSIsInJvbGUiOiJTdHVkZW50IiwiaWF0IjoxNjY5MDY4NTk5LCJleHAiOjE2Njk2NzMzOTl9.TwEsjKHS2dgMEQPP8OVg7HdcofxcDC4U2J6d5LX67LA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contractid\": \"637d5a2af06284c0f700c353\",\r\n  \"state\": \"Finalizada\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/contracts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"contracts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contracts",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzN2E4ODljMmNmODUzMGIwYzZiMzRlYyIsInVzZXJuYW1lIjoicGVwZSIsInJvbGUiOiJTdHVkZW50IiwiaWF0IjoxNjY5MDY4NTk5LCJleHAiOjE2Njk2NzMzOTl9.TwEsjKHS2dgMEQPP8OVg7HdcofxcDC4U2J6d5LX67LA"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/contracts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"contracts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Info",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzN2E4ODljMmNmODUzMGIwYzZiMzRlYyIsInVzZXJuYW1lIjoicGVwZSIsInJvbGUiOiJTdHVkZW50IiwiaWF0IjoxNjY5MDY4NTk5LCJleHAiOjE2Njk2NzMzOTl9.TwEsjKHS2dgMEQPP8OVg7HdcofxcDC4U2J6d5LX67LA"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/contracts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"contracts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"user@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/users/resetPassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"users",
+								"resetPassword"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	}
+}

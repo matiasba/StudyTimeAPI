@@ -111,7 +111,8 @@ contractsRouter.put('/moderateComment', useAuthorization, (request, response) =>
   const validStates = ['Bloqueado', 'Aceptado']
   const {
     contractid,
-    state
+    state,
+    razon
   } = request.body
   const userid = request.userId
 
@@ -141,7 +142,7 @@ contractsRouter.put('/moderateComment', useAuthorization, (request, response) =>
               if (state === 'Bloqueado') {
                 User.findById(updatedContract.studentid).then(user => {
                   bloquedMail.to = user.email
-                  bloquedMail.text = `Su profesor a bloqueado el siguiente comentario: ${updatedContract.comment.comment}`
+                  bloquedMail.text = `Su profesor a bloqueado el siguiente comentario: ${updatedContract.comment.comment} \nLa razon dada es: ${razon}`
                   sendMail(bloquedMail)
                 })
               }
